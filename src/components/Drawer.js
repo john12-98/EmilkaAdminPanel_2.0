@@ -151,6 +151,14 @@ export default function MiniDrawer({ children }) {
               <ListItemText primary="Add New Product" />
             </ListItem>
           </Link>
+          <Link to="/order">
+            <ListItem button>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary="View Orders" />
+            </ListItem>
+          </Link>
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

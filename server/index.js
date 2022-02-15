@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const GetProducts = require("./routes/productlist");
+const OrderProducts = require("./routes/orderroutes");
 //const FilterProducts = require("./routes/filterproducts");
 //const CartRoutes = require("./routes/cartroutes");
 const app = express();
@@ -20,6 +21,7 @@ mongoose
     console.log("DB connection failed");
   });
 app.use("/getallproducts", GetProducts);
+app.use("/order", OrderProducts);
 //app.use("/filter", FilterProducts);
 //app.use("/cart", CartRoutes);
 app.listen(3001, () => {

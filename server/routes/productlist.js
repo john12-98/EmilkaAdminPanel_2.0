@@ -27,7 +27,18 @@ router.get("/item", async (req, res) => {
     console.log(e.message);
   }
 });
-
+router.post("/post", async (req, res) => {
+  //for posting new products, for admin purposes
+  const p = req.body;
+  const newproduct = new AllProductsModel(p);
+  try {
+    await newproduct.save();
+    res.send("posteeeeeddddddd");
+    console.log("pooooost");
+  } catch (e) {
+    console.log(e);
+  }
+});
 router.put("/update", async (req, res) => {
   try {
     let r = await AllProductsModel.updateOne(

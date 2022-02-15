@@ -3,7 +3,7 @@ import MiniDrawer from "./components/Drawer";
 import NewProduct from "./components/New";
 import FullFeaturedCrudGrid from "./components/Edit";
 import ViewItem from "./components/viewitem";
-
+import Orders from "./components/OrderPage";
 function App() {
   return (
     <Router>
@@ -13,6 +13,7 @@ function App() {
 
           <Route path="/viewitem/:id" exact component={ViewItem}></Route>
           <Route path="/newproduct" exact component={NewProduct}></Route>
+          <Route path="/order" exact component={Orders}></Route>
         </Switch>
       </MiniDrawer>
     </Router>
