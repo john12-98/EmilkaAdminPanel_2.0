@@ -14,6 +14,7 @@ import Axios from "axios";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import app from "../firebase";
+import api from "../axios/axios";
 import {
   getStorage,
   ref,
@@ -96,7 +97,7 @@ export default function NewProduct() {
       description,
       price,
     });
-    Axios.post("http://localhost:3001/getallproducts/post", {
+    api.post("/getallproducts/post", {
       gender,
       garmentName,
       size: sizeState,

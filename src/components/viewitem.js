@@ -1,5 +1,5 @@
 import * as React from "react";
-
+import api from "../axios/axios";
 import Axios from "axios";
 import Container from "@mui/material/Container";
 import { Stack } from "@mui/material";
@@ -39,14 +39,15 @@ const ViewItem = (props) => {
       s: sizeAr,
     });
     setMessage("");
-    Axios.put(`http://localhost:3001/getallproducts/update`, {
-      ID: props.match.params.id,
-      desc: description,
-      garName: designer,
-      gen: gender,
-      p: price,
-      s: sizeAr,
-    })
+    api
+      .put(`/getallproducts/update`, {
+        ID: props.match.params.id,
+        desc: description,
+        garName: designer,
+        gen: gender,
+        p: price,
+        s: sizeAr,
+      })
       .then((response) => {
         console.log("lebaw:", response);
         setMessage(response.statusText);
@@ -56,9 +57,8 @@ const ViewItem = (props) => {
       });
   };
   React.useEffect(() => {
-    Axios.get(
-      `http://localhost:3001/getallproducts/item?id=${props.match.params.id}`
-    )
+    api
+      .get(`/getallproducts/item?id=${props.match.params.id}`)
       .then((response) => {
         console.log("ypyp", response.data);
         setItemData(response.data);

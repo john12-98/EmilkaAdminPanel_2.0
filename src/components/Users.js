@@ -1,5 +1,6 @@
 import * as React from "react";
 import PropTypes from "prop-types";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import Box from "@mui/material/Box";
 import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
 import Backdrop from "@mui/material/Backdrop";
@@ -14,8 +15,8 @@ import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useHistory } from "react-router-dom";
-
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import api from "../axios/axios";
+import { DataGrid, GridActionsCellItem, GridToolbar } from "@mui/x-data-grid";
 let delID = "";
 export default function Users() {
   const history = useHistory();
@@ -43,20 +44,22 @@ export default function Users() {
   const handleToggle = () => {
     setOpen(!open);
   };
-
+  const handleEnableClick = (id) => (event) => {
+    api.put(`/admin/enable?id=${id}`).then((response) => {
+      setRows([...response.data]);
+    });
+  };
   const handleDisableClick = (id) => (event) => {
-    Axios.put(`http://localhost:5000/disable?id=${id}`).then((response) => {
+    api.put(`/admin/disable?id=${id}`).then((response) => {
       setRows([...response.data]);
     });
   };
 
   const deleteUser = (event) => {
     console.log("rrrrrrrrrr", delID);
-    Axios.delete(`http://localhost:5000/delete?id=${delID}`).then(
-      (response) => {
-        setRows([...response.data]);
-      }
-    );
+    api.delete(`/admin/delete?id=${delID}`).then((response) => {
+      setRows([...response.data]);
+    });
   };
   const handleDeleteClick = (id) => (event) => {
     handleClick(id);
@@ -139,28 +142,50 @@ export default function Users() {
       headerName: "Actions",
       width: 100,
       cellClassName: "actions",
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-            icon={<DoNotDisturbIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleDisableClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
+      getActions: (params) => {
+        console.log("feso", params);
+        if (params.row.disabled) {
+          return [
+            <GridActionsCellItem
+              icon={<VerifiedUserIcon color="success" />}
+              label="Enable"
+              className="textPrimary"
+              onClick={handleEnableClick(params.id)}
+              color="inherit"
+            />,
+
+            <GridActionsCellItem
+              icon={<DeleteIcon color="info" />}
+              label="Delete"
+              onClick={handleDeleteClick(params.id)}
+              color="inherit"
+            />,
+          ];
+        } else if (!params.row.disabled) {
+          return [
+            <GridActionsCellItem
+              icon={<DoNotDisturbIcon color="error" />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleDisableClick(params.id)}
+              color="inherit"
+            />,
+
+            <GridActionsCellItem
+              icon={<DeleteIcon color="info" />}
+              label="Delete"
+              onClick={handleDeleteClick(params.id)}
+              color="inherit"
+            />,
+          ];
+        }
       },
     },
   ];
 
   React.useEffect(() => {
-    Axios.get("http://localhost:5000")
+    api
+      .get("/admin/users")
       .then((response) => {
         console.log("gaga", response.data);
         setRows([...response.data]);
@@ -193,6 +218,9 @@ export default function Users() {
         columns={columns}
         editMode="row"
         getRowId={(r) => r.uid}
+        components={{
+          Toolbar: GridToolbar,
+        }}
       />
       <Snackbar
         open={openSnack}

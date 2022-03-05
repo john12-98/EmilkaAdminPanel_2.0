@@ -1,6 +1,6 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
-
+import api from "../axios/axios";
 import Alert from "@mui/material/Alert";
 import Axios from "axios";
 let orderID = 0;
@@ -19,13 +19,14 @@ export default function Orders() {
     orderID = params.row._id;
   };
   const onStatusCommit = (params) => {
-    Axios.put("http://localhost:3001/order/updatestatus", {
+    api.put("/order/updatestatus", {
       ID: orderID,
       stat: params.value,
     });
   };
   React.useEffect(() => {
-    Axios.get(`http://localhost:3001/order/getorders`)
+    api
+      .get(`/order/getorders`)
       .then((response) => {
         console.log(response.data);
         setRows(response.data);

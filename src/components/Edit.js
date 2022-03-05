@@ -1,7 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
-
+import api from "../axios/axios";
 import Backdrop from "@mui/material/Backdrop";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -55,9 +55,7 @@ export default function FullFeaturedCrudGrid() {
   };
   const deleteGarment = async () => {
     console.log("tatatatatata", delID);
-    let a = await Axios.delete(
-      `http://localhost:3001/getallproducts/delete?id=${delID}`
-    );
+    let a = await api.delete(`/getallproducts/delete?id=${delID}`);
     window.location.reload(true);
     console.log(a);
   };
@@ -167,7 +165,8 @@ export default function FullFeaturedCrudGrid() {
   ];
 
   React.useEffect(() => {
-    Axios.get("http://localhost:3001/getallproducts")
+    api
+      .get("/getallproducts")
       .then((response) => {
         console.log("gaga", response.data);
         setRows([...response.data]);
