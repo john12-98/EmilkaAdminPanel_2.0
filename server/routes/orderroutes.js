@@ -21,4 +21,12 @@ router.put("/updatestatus", async (req, res) => {
     console.log("bnbnbnbnbn", e);
   }
 });
+router.post("/addorder", async (req, res) => {
+  try {
+    const result = await OrderModel.create(req.body);
+    res.send(result);
+  } catch (e) {
+    console.log("error occured,,,...", e.message);
+  }
+});
 module.exports = router;

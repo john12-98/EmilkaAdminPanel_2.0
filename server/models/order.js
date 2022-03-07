@@ -7,15 +7,15 @@ const OrderSchema = new mongoose.Schema(
       required: true,
     },
 
-    productId: { type: String },
-
-    address: {
-      type: Object,
-      default: { location: "", phoneNumber: 0911000000 },
-    }, //required : true
-    quantity: { type: Number, default: 1 },
-    size: { type: String },
-    status: { type: String, default: "pending" },
+    product: {
+      name: { type: String },
+      imgUrl: { type: String },
+      description: { type: String },
+      price: { type: Number },
+      quantity: { type: Number, default: 1 },
+      size: { type: String },
+    },
+    phone: { type: String },
   },
   { timestamps: true }
 );

@@ -1,96 +1,111 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import api from "../axios/axios";
-import Alert from "@mui/material/Alert";
-import Axios from "axios";
+
 let orderID = 0;
 export default function Orders() {
-  const [editRowsModel, setEditRowsModel] = React.useState({});
   const [rows, setRows] = React.useState([]);
-  const handleEditRowsModelChange = React.useCallback((model, x) => {
-    console.log("model", x);
-    setEditRowsModel(model);
-  }, []);
-  const getAddress = (params) => {
-    console.log(params);
-    return `${params.row.address.phoneNumber} , location here`;
+
+  const getSize = (params) => {
+    return `${params.row.product.size}`;
   };
-  const onStatusDoubleClick = (params) => {
-    orderID = params.row._id;
+  const getQuantity = (params) => {
+    return `${params.row.product.quantity}`;
   };
-  const onStatusCommit = (params) => {
-    api.put("/order/updatestatus", {
-      ID: orderID,
-      stat: params.value,
-    });
+  const getPhoneNumber = (params) => {
+    return `${params.row.phone}`;
   };
+  const getOrderDate = (params) => {
+    return `${params.row.createdAt}`;
+  };
+  const getCustomerName = (params) => {
+    return `${params.row.product.name}`;
+  };
+  const getProductPrice = (params) => {
+    return `${params.row.product.price}`;
+  };
+
   React.useEffect(() => {
     api
       .get(`/order/getorders`)
       .then((response) => {
-        console.log(response.data);
         setRows(response.data);
       })
       .catch((e) => {});
   }, []);
   const columns = [
-    {
-      field: "productId",
-      headerName: "Product ID",
-      width: 250,
-      editable: false,
-    },
+    // {
+    //   field: "_id",
+    //   headerName: "Order ID",
+    //   width: 250,
+    //   editable: false,
+    // },
     {
       field: "customer",
-      headerName: "Customer E-Mail",
+      headerName: "Customer E-Mail or name",
       width: 250,
       editable: false,
     },
-    { field: "size", headerName: "Size", editable: false },
+    {
+      field: "name",
+      headerName: "Customer Name",
+      width: 250,
+      valueGetter: getCustomerName,
+      editable: false,
+    },
+    {
+      field: "imgUrl",
+      headerName: "Product Image",
+      editable: false,
+      valueGetter: getSize,
+      renderCell: (params) => {
+        return (
+          <img
+            style={{ width: "100%", height: "100%" }}
+            src={params.row.product.imgUrl}
+          />
+        );
+      },
+    },
+    {
+      field: "size",
+      headerName: "Size",
+      editable: false,
+      valueGetter: getSize,
+    },
     {
       field: "quantity",
       headerName: "Quantity",
-
+      valueGetter: getQuantity,
       width: 180,
       editable: false,
     },
     {
-      field: "address",
-      headerName: "Address",
-      valueGetter: getAddress,
+      field: "price",
+      headerName: "Price",
+      width: 180,
+      valueGetter: getProductPrice,
+      editable: false,
+    },
+    {
+      field: "phone",
+      headerName: "Phone Number",
+      valueGetter: getPhoneNumber,
       width: 220,
       editable: false,
     },
     {
       field: "createdAt",
       headerName: "Order Date",
-
+      valueGetter: getOrderDate,
       width: 220,
       editable: false,
-    },
-    {
-      field: "status",
-      headerName: "Current Status",
-
-      width: 220,
-      editable: true,
     },
   ];
   return (
     <div style={{ width: "100%" }}>
-      <Alert severity="info" style={{ marginBottom: 8 }}>
-        <code>editRowsModel: {JSON.stringify(editRowsModel)}</code>
-      </Alert>
       <div style={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          editRowsModel={editRowsModel}
-          onEditRowsModelChange={handleEditRowsModelChange}
-          getRowId={(r) => r._id}
-          onCellEditCommit={onStatusCommit}
-          onCellDoubleClick={onStatusDoubleClick}
-        />
+        <DataGrid rows={rows} columns={columns} getRowId={(r) => r._id} />
       </div>
     </div>
   );

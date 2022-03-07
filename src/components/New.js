@@ -10,7 +10,7 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange, green } from "@mui/material/colors";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import Axios from "axios";
+
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import app from "../firebase";
@@ -24,13 +24,13 @@ import {
 let size = [];
 let image = {};
 let garmentName = "";
-
+let downloadUrl = "";
 let description = "";
 let price = 0;
 export default function NewProduct() {
-  const [downloadURL, setDownloadURL] = React.useState("");
+  //const [downloadUrl, setDownloadURL] = React.useState("");
   //const [image, setImage] = React.useState(null);
-
+  const [src, setSrc] = React.useState("");
   const [gender, setGender] = React.useState(" ");
   const [sizeState, setSizeState] = React.useState([]);
 
@@ -39,7 +39,7 @@ export default function NewProduct() {
 
     //v9
     const storage = getStorage(app);
-    const storageRef = ref(storage, `tests123/${image.name}`);
+    const storageRef = ref(storage, `rt/${image.name}`);
 
     const uploadTask = uploadBytesResumable(storageRef, image);
 
@@ -51,9 +51,15 @@ export default function NewProduct() {
         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           console.log("File available at", downloadURL);
           try {
-            setDownloadURL(downloadURL);
-            // let p = await updateProfilePic(downloadURL);
-            // console.log("sertual abate", p);
+            downloadUrl = downloadURL;
+            api.post("/getallproducts/post", {
+              gender,
+              garmentName,
+              size: sizeState,
+              imgUrl: downloadUrl,
+              description,
+              price,
+            });
           } catch (e) {
             console.log("ere aza new", e);
           }
@@ -61,13 +67,19 @@ export default function NewProduct() {
       }
     );
   };
+
   const handleImageChange = (e) => {
-    console.log("inside change");
     if (e.target.files[0]) {
       //setImage(e.target.files[0]);
       image = e.target.files[0];
-      handleUpload();
-      //console.log("bnbnbnbnbn", e.target.files[0]);
+
+      var reader = new FileReader();
+      reader.onload = function () {
+        console.log("reader", reader.result);
+        setSrc(reader.result);
+      };
+      reader.readAsDataURL(e.target.files[0]);
+      //handleUpload();
     }
   };
 
@@ -89,31 +101,34 @@ export default function NewProduct() {
     console.log(size);
   };
   const postProduct = () => {
-    console.log({
-      gender,
-      garmentName,
-      size: sizeState,
-      imgUrl: downloadURL,
-      description,
-      price,
-    });
-    api.post("/getallproducts/post", {
-      gender,
-      garmentName,
-      size: sizeState,
-      imgUrl: downloadURL,
-      description,
-      price,
-    });
+    //handleUpload();
+    // await api.post("/getallproducts/post", {
+    //   gender,
+    //   garmentName,
+    //   size: sizeState,
+    //   imgUrl: downloadUrl,
+    //   description,
+    //   price,
+    // });
+    // console.log("logs", {
+    //   gender,
+    //   garmentName,
+    //   size: sizeState,
+    //   imgUrl: downloadUrl,
+    //   description,
+    //   price,
+    // });
   };
+
   return (
     <Container maxWidth="sm">
       <FormControl>
         <input id="img" type={"file"} hidden onChange={handleImageChange} />
+
         <Avatar
           sx={{ bgcolor: deepOrange[500], width: 400, height: 400 }}
           variant="square"
-          src={downloadURL}
+          src={src}
         >
           <InsertPhotoIcon
             onClick={() => {
@@ -181,8 +196,8 @@ export default function NewProduct() {
           control={<Checkbox value={"XXL"} onChange={handleCheck} />}
           label="XXL"
         />
-        <Button variant="contained" onClick={postProduct}>
-          test
+        <Button variant="contained" onClick={handleUpload}>
+          Add Item
         </Button>
       </FormControl>
     </Container>
