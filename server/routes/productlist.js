@@ -9,7 +9,7 @@ router.get("", async (req, res) => {
     console.log("inside roter........");
     const products = await AllProductsModel.find({}).sort({
       price: 1,
-      garmentName: "desc",
+      productName: "desc",
     });
     res.send(products);
   } catch (e) {
@@ -46,7 +46,7 @@ router.put("/update", async (req, res) => {
       {
         $set: {
           description: req.body.desc,
-          garmentName: req.body.garName,
+          productName: req.body.garName,
           gender: req.body.gen,
           price: req.body.p,
           size: req.body.s,

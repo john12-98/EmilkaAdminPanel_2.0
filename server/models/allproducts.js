@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-const AllGarment = new mongoose.Schema(
+const ProductSchema = new mongoose.Schema(
   {
     gender: {
       type: String,
       required: true,
     },
-    garmentName: {
+    productName: {
       type: String,
       required: true,
 
@@ -27,5 +27,5 @@ const AllGarment = new mongoose.Schema(
   { timestamps: true }
 );
 
-const AllGarmentModel = mongoose.model("productstest14", AllGarment);
-module.exports = AllGarmentModel;
+const ProductModel = mongoose.model("productstest14", ProductSchema);
+module.exports = ProductModel;

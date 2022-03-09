@@ -96,7 +96,7 @@ export default function FullFeaturedCrudGrid() {
       },
     },
     {
-      field: "garmentName",
+      field: "productName",
       headerName: "Designer Name",
       width: 180,
       editable: true,
